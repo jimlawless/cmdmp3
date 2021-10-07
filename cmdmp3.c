@@ -8,7 +8,7 @@
 // See http://www.mailsend-online.com/license2015.php
 //
 // To build, use the following MinGW command:
-//    gcc -o cmdmp3.exe -lwinmm cmdmp3.c
+//    gcc -o cmdmp3.exe cmdmp3.c -l Winmm
 
 #include <windows.h>
 #include <stdio.h>
@@ -22,7 +22,7 @@ int main(int argc,char **argv) {
    printf("cmdmp3 v2.0\n");
    printf("Command-line MP3 player\n");
    printf("by Jim Lawless - http://jiml.us\n\n");
-   
+
    if(argc<2) {
       fprintf(stderr,"Syntax:\n\tcmdmp3 \"c:\\path to file\\file.mp3\"\n");
       return 1;
@@ -34,7 +34,7 @@ int main(int argc,char **argv) {
    if(!*shortBuffer) {
       fprintf(stderr,"Cannot shorten filename \"%s\"\n",argv[1]);
       return 1;
-   }   
+   }
    sendCommand("Close All");
 
    sprintf(cmdBuff,"Open %s Type MPEGVideo Alias theMP3",shortBuffer);

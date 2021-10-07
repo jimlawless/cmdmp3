@@ -64,8 +64,8 @@ jobs:
     #    uses a compiled language
 
     - run: |
-       gcc -o cmdmp3.exe -lwinmm cmdmp3.c
-       gcc -o cmdmp3win.exe -lwinmm cmdmp3win.c
+        gcc -o cmdmp3.exe cmdmp3.c -l Winmm
+        gcc -o cmdmp3win.exe cmdmp3win.c -l Winmm -mwindows
 
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v1

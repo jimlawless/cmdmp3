@@ -6,6 +6,8 @@ I've had to rebuild these files since their initial release.  Please see the blo
 https://lawlessguy.wordpress.com/2015/06/27/update-to-a-command-line-mp3-player-for-windows/
 
 To build, use the following MinGW command:
+
 ```
-    gcc -o cmdmp3.exe -lwinmm cmdmp3.c
+gcc -o cmdmp3.exe cmdmp3.c -l Winmm
+gcc -o cmdmp3win.exe cmdmp3win.c -l Winmm -mwindows
 ```

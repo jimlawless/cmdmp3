@@ -8,7 +8,7 @@
 // See http://www.mailsend-online.com/license2015.php
 //
 // To build, use the following MinGW command:
-//   gcc  cmdmp3win.c -lwinmm  -mwindows -o cmdmp3win.exe
+//   gcc -o cmdmp3win.exe cmdmp3win.c -l Winmm -mwindows
 
 
 #include <windows.h>
@@ -23,14 +23,14 @@ extern char ** __argv;
 
 void sendCommand(char *);
 
-int WINAPI WinMain( HINSTANCE hInstance, 
-					HINSTANCE hPrevInstance, 
-					LPSTR lpCmdLine, 
+int WINAPI WinMain( HINSTANCE hInstance,
+					HINSTANCE hPrevInstance,
+					LPSTR lpCmdLine,
 					int nCmdShow ) {
 
    char shortBuffer[MAX_PATH];
    char cmdBuff[MAX_PATH + 64];
-   
+
    if(__argc<2) {
       sprintf(msg,"Syntax:\n\tcmdmp3win \"c:\\path to file\\file.mp3\"\n");
       MessageBox(NULL,msg,"cmdmp3win v2.0",MB_OK);
@@ -44,7 +44,7 @@ int WINAPI WinMain( HINSTANCE hInstance,
       sprintf(msg,"Cannot shorten filename \"%s\"\n",__argv[1]);
       MessageBox(NULL,msg,"cmdmp3win",MB_OK);
       return 1;
-   }   
+   }
    sendCommand("Close All");
 
    sprintf(cmdBuff,"Open %s Type MPEGVideo Alias theMP3",shortBuffer);
