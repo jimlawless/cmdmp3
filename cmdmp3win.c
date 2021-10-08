@@ -23,8 +23,8 @@ extern char ** __argv;
 int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow ) {
    if(__argc < 2) {
       char msg[64];
-      sprintf(msg,"Syntax:\n\tcmdmp3win \"c:\\path to file\\file.mp3\"\n");
-      MessageBox(NULL,msg,"cmdmp3win v2.1",MB_OK);
+      sprintf(msg, "Syntax:\n\tcmdmp3win \"c:\\path to file\\file.mp3\"\n");
+      MessageBox(NULL, msg, "cmdmp3win v2.1",MB_OK);
       return 1;
    }
 
