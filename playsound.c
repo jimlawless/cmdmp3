@@ -6,12 +6,20 @@
 #include <stdio.h>
 #include <string.h>
 
-void playSoundFile(char *);
+int PlaySoundFile(char *);
 void sendCommand(char *);
 
 // Attempt to play the given sound file using Media Control Interface
-void playSoundFile(char *fullPath) {
-    printf("Playing File: %s\n", fullPath);
+int PlaySoundFile(char *fullPath) {
+    // Get the shortened path because the MCI string interpreter uses spaces
+    // as a separator. If spaces appear in the commands, parts of the filename
+    // would be interpreted as parameters to the given command.
+    char shortBuffer[MAX_PATH];
+    GetShortPathName(fullPath, shortBuffer, sizeof(shortBuffer));
+    if(!*shortBuffer) {
+        fprintf(stderr, "Cannot shorten filename \"%s\"\n", fullPath);
+        return 1;
+    }
 
     sendCommand("Close All");
 
@@ -22,6 +30,7 @@ void playSoundFile(char *fullPath) {
     sendCommand(cmdBuff);
 
     sendCommand("Play theMP3 Wait");
+    return 0;
 }
 
 // Send a string to the Media Control Interface

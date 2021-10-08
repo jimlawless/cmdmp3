@@ -10,7 +10,6 @@
 // To build, use the following MinGW command:
 //    gcc -o cmdmp3.exe cmdmp3.c -l Winmm
 
-#include <windows.h>
 #include <stdio.h>
 #include <string.h>
 #include "playsound.c"
@@ -18,7 +17,6 @@
 
 
 int main(int argc, char **argv) {
-   char shortBuffer[MAX_PATH];
    printf("cmdmp3 v2.1\n");
    printf("Command-line MP3 player\n");
    printf("by Jim Lawless - https://jiml.us\n\n");
@@ -29,15 +27,5 @@ int main(int argc, char **argv) {
       return 1;
    }
 
-   // Get the shortened path because the MCI string interpreter uses spaces
-   // as a separator. If spaces appear in the commands, parts of the filename
-   // would be interpreted as parameters to the given command.
-   GetShortPathName(argv[1], shortBuffer, sizeof(shortBuffer));
-   if(!*shortBuffer) {
-      fprintf(stderr, "Cannot shorten filename \"%s\"\n", argv[1]);
-      return 1;
-   }
-
-   playSoundFile(shortBuffer);
-   return 0;
+   return PlaySoundFile(argv[1]);
 }

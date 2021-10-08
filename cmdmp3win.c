@@ -21,26 +21,12 @@ extern int __argc;
 extern char ** __argv;
 
 int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow ) {
-
-   char shortBuffer[MAX_PATH];
-   char msg[256];
-
    if(__argc < 2) {
+      char msg[64];
       sprintf(msg,"Syntax:\n\tcmdmp3win \"c:\\path to file\\file.mp3\"\n");
-      MessageBox(NULL,msg,"cmdmp3win v2.0",MB_OK);
+      MessageBox(NULL,msg,"cmdmp3win v2.1",MB_OK);
       return 1;
    }
 
-   // Get the shortened path because the MCI string interpreter uses spaces
-   // as a separator. If spaces appear in the commands, parts of the filename
-   // would be interpreted as parameters to the given command.
-   GetShortPathName(__argv[1], shortBuffer, sizeof(shortBuffer));
-   if(!*shortBuffer) {
-      sprintf(msg,"Cannot shorten filename \"%s\"\n",__argv[1]);
-      MessageBox(NULL,msg,"cmdmp3win",MB_OK);
-      return 1;
-   }
-
-   playSoundFile(shortBuffer);
-   return 0;
+   return PlaySoundFile(__argv[1]);
 }
