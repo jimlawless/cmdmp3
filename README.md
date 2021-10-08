@@ -1,4 +1,5 @@
-# cmdmp3
+# cmdmp3 [![CodeQL](https://github.com/A9G-Data-Droid/cmdmp3/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/A9G-Data-Droid/cmdmp3/actions/workflows/codeql-analysis.yml)
+
 Lightweight command-line MP3 players for Windows written in C 
 
 I've had to rebuild these files since their initial release.  Please see the blog post at:
