@@ -10,18 +10,14 @@
 // To build, use the following MinGW command:
 //   gcc -o cmdmp3win.exe cmdmp3win.c -l Winmm -mwindows
 
-
 #include <windows.h>
 #include <string.h>
 #include <stdio.h>
-
-char msg[256];
-
-extern int __argc;
-extern char ** __argv;
+#include "playsound.c"
 
 
-void sendCommand(char *);
+
+PCHAR* CommandLineToArgvA(PCHAR, int*);
 
 int WINAPI WinMain( HINSTANCE hInstance,
 					HINSTANCE hPrevInstance,
@@ -29,39 +25,107 @@ int WINAPI WinMain( HINSTANCE hInstance,
 					int nCmdShow ) {
 
    char shortBuffer[MAX_PATH];
-   char cmdBuff[MAX_PATH + 64];
+   char msg[256];
 
-   if(__argc<2) {
+   char ** arguments;
+   int numberOfArguments;
+   arguments = CommandLineToArgvA(GetCommandLine(), &numberOfArguments);
+
+   if(numberOfArguments < 2) {
       sprintf(msg,"Syntax:\n\tcmdmp3win \"c:\\path to file\\file.mp3\"\n");
       MessageBox(NULL,msg,"cmdmp3win v2.0",MB_OK);
       return 1;
    }
-      // Get the shortened path because the MCI string interpreter uses spaces
-      // as a separator.  If spaces appear in the commands, parts of the filename
-      // would be interpreted as paramters to the given command.
-   GetShortPathName(__argv[1],shortBuffer,sizeof(shortBuffer));
+
+   // Get the shortened path because the MCI string interpreter uses spaces
+   // as a separator. If spaces appear in the commands, parts of the filename
+   // would be interpreted as parameters to the given command.
+   GetShortPathName(arguments[1], shortBuffer, sizeof(shortBuffer));
    if(!*shortBuffer) {
-      sprintf(msg,"Cannot shorten filename \"%s\"\n",__argv[1]);
+      sprintf(msg,"Cannot shorten filename \"%s\"\n",arguments[1]);
       MessageBox(NULL,msg,"cmdmp3win",MB_OK);
       return 1;
    }
-   sendCommand("Close All");
 
-   sprintf(cmdBuff,"Open %s Type MPEGVideo Alias theMP3",shortBuffer);
-   sendCommand(cmdBuff);
-
-   sendCommand("Play theMP3 Wait");
+   playSoundFile(shortBuffer);
    return 0;
 }
 
-   // Send a string to the Media Control Interface
-   // If an error occurs, display it and the string
-   // that produced the error.
-void sendCommand(char *s) {
-   int i;
-   i=mciSendString(s,NULL,0,0);
-   if(i) {
-         sprintf(msg,"Error %d when sending %s\n",i,s);
-         MessageBox(NULL,msg,"cmdmp3win",MB_OK);
+PCHAR* CommandLineToArgvA(PCHAR CmdLine, int* _argc) {
+   PCHAR* argv;
+   PCHAR  _argv;
+   ULONG   len;
+   ULONG   argc;
+   CHAR   a;
+   ULONG   i, j;
+
+   BOOLEAN  in_QM;
+   BOOLEAN  in_TEXT;
+   BOOLEAN  in_SPACE;
+
+   len = strlen(CmdLine);
+   i = ((len+2)/2)*sizeof(PVOID) + sizeof(PVOID);
+
+   argv = (PCHAR*)GlobalAlloc(GMEM_FIXED,
+                              i + (len+2)*sizeof(CHAR));
+
+   _argv = (PCHAR)(((PUCHAR)argv)+i);
+
+   argc = 0;
+   argv[argc] = _argv;
+   in_QM = FALSE;
+   in_TEXT = FALSE;
+   in_SPACE = TRUE;
+   i = 0;
+   j = 0;
+
+   while( a = CmdLine[i] ) {
+      if(in_QM) {
+         if(a == '\"') {
+            in_QM = FALSE;
+         } else {
+            _argv[j] = a;
+            j++;
+         }
+      } else {
+         switch(a) {
+            case '\"':
+               in_QM = TRUE;
+                 in_TEXT = TRUE;
+                 if(in_SPACE) {
+                    argv[argc] = _argv+j;
+                    argc++;
+                 }
+                 in_SPACE = FALSE;
+                 break;
+            case ' ':
+            case '\t':
+            case '\n':
+            case '\r':
+               if(in_TEXT) {
+                  _argv[j] = '\0';
+                  j++;
+               }
+                 in_TEXT = FALSE;
+                 in_SPACE = TRUE;
+                 break;
+            default:
+               in_TEXT = TRUE;
+                 if(in_SPACE) {
+                    argv[argc] = _argv+j;
+                    argc++;
+                 }
+                 _argv[j] = a;
+                 j++;
+                 in_SPACE = FALSE;
+                 break;
+         }
+      }
+      i++;
    }
+   _argv[j] = '\0';
+   argv[argc] = NULL;
+
+   (*_argc) = argc;
+   return argv;
 }
