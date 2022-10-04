@@ -3,9 +3,9 @@
 // (window-mode version)
 //
 // License: MIT / X11
-// Copyright (c) 2009, 2015 by James K. Lawless
-// jimbo@radiks.net  http://jiml.us
-// See http://www.mailsend-online.com/license2015.php
+// Copyright (c) 2009, 2015, 2022 by James K. Lawless
+// jimbo@radiks.net  https://jiml.us
+// See https://jiml.us/license2022.htm
 //
 // To build, use the following MinGW command:
 //   gcc  cmdmp3win.c -lwinmm  -mwindows -o cmdmp3win.exe
@@ -16,11 +16,9 @@
 #include <stdio.h>
 
 char msg[256];
+char *title="cmdmp3win v2.10";
 
-extern int __argc;
-extern char ** __argv;
-
-
+char *parse_arg(char *);
 void sendCommand(char *);
 
 int WINAPI WinMain( HINSTANCE hInstance, 
@@ -28,31 +26,77 @@ int WINAPI WinMain( HINSTANCE hInstance,
 					LPSTR lpCmdLine, 
 					int nCmdShow ) {
 
-   char shortBuffer[MAX_PATH];
-   char cmdBuff[MAX_PATH + 64];
+    char cmdBuff[MAX_PATH + 64];
+    char *arg;
+
+    arg=parse_arg(lpCmdLine);
    
-   if(__argc<2) {
-      sprintf(msg,"Syntax:\n\tcmdmp3win \"c:\\path to file\\file.mp3\"\n");
-      MessageBox(NULL,msg,"cmdmp3win v2.0",MB_OK);
-      return 1;
-   }
-      // Get the shortened path because the MCI string interpreter uses spaces
-      // as a separator.  If spaces appear in the commands, parts of the filename
-      // would be interpreted as paramters to the given command.
-   GetShortPathName(__argv[1],shortBuffer,sizeof(shortBuffer));
-   if(!*shortBuffer) {
-      sprintf(msg,"Cannot shorten filename \"%s\"\n",__argv[1]);
-      MessageBox(NULL,msg,"cmdmp3win",MB_OK);
-      return 1;
-   }   
-   sendCommand("Close All");
+    if(arg==NULL) {
+        return 1;
+    }
+    sendCommand("Close All");
+    sprintf(cmdBuff,"Open \"%s\" Type MPEGVideo Alias theMP3",arg);
+    sendCommand(cmdBuff);
 
-   sprintf(cmdBuff,"Open %s Type MPEGVideo Alias theMP3",shortBuffer);
-   sendCommand(cmdBuff);
-
-   sendCommand("Play theMP3 Wait");
-   return 0;
+    sendCommand("Play theMP3 Wait");
+    return 0;
 }
+
+    // parse a single command-line argument.
+    // remove enclosing double-quotes if present
+    // return a new string
+char *parse_arg(char *s) {
+    char *p,*start;
+    int i=0;
+    if(s==NULL) {
+        sprintf(msg,"Syntax:\n\tcmdmp3win \"c:\\path to file\\file.mp3\"\n");
+        MessageBox(NULL,msg,title,MB_OK);
+        return s;
+    }
+    if(!*s) {
+        sprintf(msg,"Syntax:\n\tcmdmp3win \"c:\\path to file\\file.mp3\"\n");
+        MessageBox(NULL,msg,title,MB_OK);
+        return NULL;
+    }
+    p=(char *)malloc(strlen(s)+1);
+    if(p==NULL) {
+        sprintf(msg,"Cannot allocate work buffer of size %d.\n",strlen(s));
+        MessageBox(NULL,msg,title,MB_OK);
+        return NULL;
+    }
+    start=p;
+    while((*s==' ')||(*s=='\t'))
+        s++;
+    if(*s=='\"') {
+        s++;
+        while(*s && (*s!='\"'))
+            *p++=*s++;
+        if(*s!='\"') {
+            sprintf(msg,"Missing closing double quotation mark.");
+            MessageBox(NULL,msg,title,MB_OK);
+            return NULL;
+        }
+        *p=0;
+        if(strlen(start)>MAX_PATH) {
+            sprintf(msg,"MP3 filename length, %d , is too long. It should not be bigger than %d.\n",strlen(start),MAX_PATH);
+            MessageBox(NULL,msg,title,MB_OK);
+            return NULL;
+        }
+        return start;
+    }
+    else {
+        while(*s && (*s!=' ')&& (*s!='\t'))
+            *p++=*s++;
+        *p=0;  
+        if(strlen(start)>MAX_PATH) {
+            sprintf(msg,"MP3 filename length, %d , is too long. It should not be bigger than %d.\n",strlen(start),MAX_PATH);
+            MessageBox(NULL,msg,title,MB_OK);
+            return NULL;
+        }        
+        return start;
+    }
+}
+
 
    // Send a string to the Media Control Interface
    // If an error occurs, display it and the string
