@@ -16,7 +16,7 @@
 #include <stdio.h>
 
 char msg[256];
-char *title="cmdmp3win v2.10";
+char *title="cmdmp3win v2.20";
 
 char *parse_arg(char *);
 void sendCommand(char *);
@@ -32,6 +32,8 @@ int WINAPI WinMain( HINSTANCE hInstance,
     arg=parse_arg(lpCmdLine);
    
     if(arg==NULL) {
+        sprintf(msg,"Syntax:\n\tcmdmp3win \"c:\\path to file\\file.mp3\"\n");
+        MessageBox(NULL,msg,title,MB_OK);
         return 1;
     }
     sendCommand("Close All");
@@ -46,57 +48,18 @@ int WINAPI WinMain( HINSTANCE hInstance,
     // remove enclosing double-quotes if present
     // return a new string
 char *parse_arg(char *s) {
-    char *p,*start;
-    int i=0;
-    if(s==NULL) {
-        sprintf(msg,"Syntax:\n\tcmdmp3win \"c:\\path to file\\file.mp3\"\n");
-        MessageBox(NULL,msg,title,MB_OK);
-        return s;
-    }
-    if(!*s) {
-        sprintf(msg,"Syntax:\n\tcmdmp3win \"c:\\path to file\\file.mp3\"\n");
-        MessageBox(NULL,msg,title,MB_OK);
-        return NULL;
-    }
-    p=(char *)malloc(strlen(s)+1);
-    if(p==NULL) {
-        sprintf(msg,"Cannot allocate work buffer of size %d.\n",strlen(s));
-        MessageBox(NULL,msg,title,MB_OK);
-        return NULL;
-    }
-    start=p;
-    while((*s==' ')||(*s=='\t'))
-        s++;
-    if(*s=='\"') {
-        s++;
-        while(*s && (*s!='\"'))
-            *p++=*s++;
-        if(*s!='\"') {
-            sprintf(msg,"Missing closing double quotation mark.");
-            MessageBox(NULL,msg,title,MB_OK);
-            return NULL;
-        }
-        *p=0;
-        if(strlen(start)>MAX_PATH) {
-            sprintf(msg,"MP3 filename length, %d , is too long. It should not be bigger than %d.\n",strlen(start),MAX_PATH);
-            MessageBox(NULL,msg,title,MB_OK);
-            return NULL;
-        }
-        return start;
-    }
-    else {
-        while(*s && (*s!=' ')&& (*s!='\t'))
-            *p++=*s++;
-        *p=0;  
-        if(strlen(start)>MAX_PATH) {
-            sprintf(msg,"MP3 filename length, %d , is too long. It should not be bigger than %d.\n",strlen(start),MAX_PATH);
-            MessageBox(NULL,msg,title,MB_OK);
-            return NULL;
-        }        
-        return start;
-    }
+    char *p;
+    char c;
+    p=strdup(s);
+    while((*p==' ')||(*p=='\t'))
+        p++;
+    c=*p;
+    if(c=='\"')
+        p=strtok(p+1,"\"");
+    else
+        p=strtok(p," \t");
+    return p;
 }
-
 
    // Send a string to the Media Control Interface
    // If an error occurs, display it and the string
