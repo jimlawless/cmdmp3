@@ -7,4 +7,4 @@ https://jimlawless.net/blog/posts/cmdmp3/
 
 Executable files are available at:
 
-https://jiml.us/downloads/cmdmp3.zip
+https://jimlawless.net/downloads/cmdmp3.zip   and   https://jiml.us/downloads/cmdmp3.zip
