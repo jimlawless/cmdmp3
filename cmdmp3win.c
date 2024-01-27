@@ -3,7 +3,7 @@
 // (window-mode version)
 //
 // License: MIT / X11
-// Copyright (c) 2009, 2015, 2022 by James K. Lawless
+// Copyright (c) 2009, 2015, 2022-2024 by James K. Lawless
 // jimbo@radiks.net  https://jiml.us
 // See https://jiml.us/license2022.htm
 //
@@ -16,7 +16,7 @@
 #include <stdio.h>
 
 char msg[256];
-char *title="cmdmp3win v2.20";
+char *title="cmdmp3win v2.30";
 
 char *parse_arg(char *);
 void sendCommand(char *);
@@ -32,7 +32,7 @@ int WINAPI WinMain( HINSTANCE hInstance,
     arg=parse_arg(lpCmdLine);
    
     if(arg==NULL) {
-        sprintf(msg,"Syntax:\n\tcmdmp3win \"c:\\path to file\\file.mp3\"\n");
+        sprintf(msg,"Syntax:\n\tcmdmp3 \"c:\\path to file\\file.mp3\"\n\t   or\n\tcmdmp3 \"url\"\n\n");
         MessageBox(NULL,msg,title,MB_OK);
         return 1;
     }
