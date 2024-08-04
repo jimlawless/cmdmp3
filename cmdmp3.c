@@ -4,8 +4,8 @@
 //
 // License: MIT / X11
 // Copyright (c) 2009, 2015, 2022-2024 by James K. Lawless
-// jimbo@radiks.net  http://jiml.us
-// See https://jiml.us/license2022.htm
+// jimbo@radiks.net  https://jimlawless.net
+// See https://github.com/jimlawless/cmdmp3/blob/master/LICENSE
 //
 // To build, use the following MinGW command:
 //    gcc  cmdmp3.c -lwinmm   -o cmdmp3.exe
@@ -20,7 +20,7 @@ int main(int argc,char **argv) {
     char cmdBuff[MAX_PATH + 64];
     printf("cmdmp3 v2.30\n");
     printf("Command-line MP3 player\n");
-    printf("by Jim Lawless - https://jiml.us\n");
+    printf("by Jim Lawless - https://jimlawless.net\n");
    
     if(argc<2) {
         fprintf(stderr,"Syntax:\n\tcmdmp3 \"c:\\path to file\\file.mp3\"\n\t   or\n\tcmdmp3 \"url\"\n\n");
