@@ -4,8 +4,8 @@
 //
 // License: MIT / X11
 // Copyright (c) 2009, 2015, 2022-2024 by James K. Lawless
-// jimbo@radiks.net  https://jiml.us
-// See https://jiml.us/license2022.htm
+// jimbo@radiks.net  https://jimlawless.net
+// See https://github.com/jimlawless/cmdmp3/blob/master/LICENSE
 //
 // To build, use the following MinGW command:
 //   gcc  cmdmp3win.c -lwinmm  -mwindows -o cmdmp3win.exe
