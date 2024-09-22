@@ -5,7 +5,9 @@ Lightweight command-line MP3 players for Windows written in C
 
     cmdmp3 https://{some-url-to-an-mp3}
 
-**Please note ... I am moving my domain hosting and I don't have a site yet to host the EXE's for cmdmp3/cmdmp3win )**
+**You should be able to download this software here via GitHub**
+
+https://github.com/jimlawless/cmdmp3/tree/master/bin
 
 Please see the blog post at:
 
